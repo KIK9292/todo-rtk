@@ -1,0 +1,4 @@
+.todolistsWrapper{
+    display: flex;
+    flex-wrap: wrap;
+}

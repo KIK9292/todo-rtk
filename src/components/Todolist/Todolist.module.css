@@ -1,0 +1,7 @@
+.TodolistWrapper{
+    margin: 10px;
+}
+
+.nameTodolistContainer{
+    display: flex;
+}

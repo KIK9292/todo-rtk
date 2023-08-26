@@ -1,0 +1,9 @@
+.TaskWrapper{
+    display: flex;
+}
+.taskCompletedText{
+text-decoration: line-through;
+}
+.taskCompleted{
+    opacity: .5;
+}

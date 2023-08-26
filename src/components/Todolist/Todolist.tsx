@@ -17,6 +17,7 @@ import {
 } from "Data/Redux/Reducers/TodolistReducer";
 import { EditableSpan } from "../EditableSpan/EditableSpan";
 import { RequestStatusType } from "Data/Redux/Reducers/app-reducer";
+import { selectTasks } from "components/Todolist/Todolist.selector";
 
 type TodolistPropsType = {
   todolistId: string;
@@ -28,7 +29,7 @@ type TodolistPropsType = {
 export const Todolist = (props: TodolistPropsType) => {
   const { todolistId, todolistTitle, filterStatus, entityStatus } = props;
   const dispatch = useAppDispatch();
-  const tasks = useAppSelector<TasksReducerStateType>((state) => state.Tasks);
+  const tasks = useAppSelector<TasksReducerStateType>(selectTasks);
   const onClickHandler = () => {
     dispatch(removeTodolistTC(todolistId));
   };

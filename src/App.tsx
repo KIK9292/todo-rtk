@@ -15,11 +15,12 @@ import { Login } from "components/Login/Login";
 import { logoutTC, statusLoginTC } from "Data/Redux/Reducers/authReducer";
 import { MyAppTodolist } from "components/MyAppTodolist/myAppTodolist";
 import CircularProgress from "@mui/material/CircularProgress";
+import { selectIsInitialized, selectIsLoggedIn, selectStatus } from "app.selectors";
 
 function App() {
-  let status = useAppSelector<RequestStatusType>((state) => state.App.status);
-  let isInitialized = useAppSelector<boolean>((state) => state.Auth.isInitialized);
-  const isLoggedIn = useAppSelector<boolean>((state) => state.Auth.isLoggedIn);
+  let status = useAppSelector<RequestStatusType>(selectStatus);
+  let isInitialized = useAppSelector<boolean>(selectIsInitialized);
+  const isLoggedIn = useAppSelector<boolean>(selectIsLoggedIn);
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(statusLoginTC());

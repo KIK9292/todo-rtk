@@ -1,9 +1,9 @@
 import React from "react";
-import { RootReducerType, useAppDispatch } from "Data/Redux/Store";
-import { useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "Data/Redux/Store";
 import { Task } from "../Task/Task";
 import { FilterValuesType } from "Data/Redux/Reducers/TodolistReducer";
-import { TasksType } from "Data/API/APITypes";
+import { selectTasks } from "components/Tasks/Tasks.select";
+import { TasksReducerStateType } from "Data/Redux/Reducers/TasksReducer";
 
 type TasksPropsType = {
   todolistId: string;
@@ -16,13 +16,13 @@ export const Tasks = (props: TasksPropsType) => {
   // useEffect(() => {
   //   dispatch(getTasksTC(todolistId));
   // }, []);
-  const allTasks = useSelector<RootReducerType, TasksType[]>((state) => state.Tasks[todolistId]);
-  let filteredTask = allTasks;
+  const allTasks = useAppSelector<TasksReducerStateType>(selectTasks);
+  let filteredTask = allTasks[todolistId];
   if (filterStatus === "Active") {
-    filteredTask = allTasks.filter((el) => el.status === 0);
+    filteredTask = allTasks[todolistId].filter((el) => el.status === 0);
   }
   if (filterStatus === "Completed") {
-    filteredTask = allTasks.filter((el) => el.status === 2);
+    filteredTask = allTasks[todolistId].filter((el) => el.status === 2);
   }
   return (
     <div>

@@ -4,6 +4,7 @@ import { AllThunkType } from "../Store";
 import { appActions, RequestStatusType } from "./app-reducer";
 import { handleServerAppError, handleServerNetworkError } from "Data/error-utils";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { getTasksTC } from "Data/Redux/Reducers/TasksReducer";
 
 const slice = createSlice({
   name: "todolists",
@@ -37,6 +38,9 @@ const slice = createSlice({
       const todolistIndex = state.findIndex((el) => el.id === action.payload.todolistId);
       state[todolistIndex].entityStatus = action.payload.entityStatus;
     },
+    clearTodoData: (state, action: PayloadAction) => {
+      return [];
+    },
   },
 });
 
@@ -51,6 +55,10 @@ export const getTodoTC = (): AllThunkType => {
       .then((res) => {
         dispatch(todolistActions.getTodo({ todos: res.data }));
         dispatch(appActions.setNewPreloaderStatus({ status: "succeeded" }));
+        return res.data;
+      })
+      .then((todos) => {
+        todos.forEach((tl) => dispatch(getTasksTC(tl.id)));
       })
       .catch((error) => {
         handleServerNetworkError(error, dispatch);

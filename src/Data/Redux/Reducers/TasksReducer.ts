@@ -42,6 +42,9 @@ const slice = createSlice({
       })
       .addCase(todolistActions.getTodo, (state, action) => {
         action.payload.todos.forEach((el) => (state[el.id] = []));
+      })
+      .addCase(todolistActions.clearTodoData, (state, action) => {
+        return {};
       });
   },
 });

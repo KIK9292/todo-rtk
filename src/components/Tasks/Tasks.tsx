@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { RootReducerType, useAppDispatch } from "Data/Redux/Store";
 import { useSelector } from "react-redux";
-import { getTasksTC } from "Data/Redux/Reducers/TasksReducer";
 import { Task } from "../Task/Task";
 import { FilterValuesType } from "Data/Redux/Reducers/TodolistReducer";
 import { TasksType } from "Data/API/APITypes";
@@ -14,9 +13,9 @@ type TasksPropsType = {
 export const Tasks = (props: TasksPropsType) => {
   const { todolistId, filterStatus } = props;
   const dispatch = useAppDispatch();
-  useEffect(() => {
-    dispatch(getTasksTC(todolistId));
-  }, []);
+  // useEffect(() => {
+  //   dispatch(getTasksTC(todolistId));
+  // }, []);
   const allTasks = useSelector<RootReducerType, TasksType[]>((state) => state.Tasks[todolistId]);
   let filteredTask = allTasks;
   if (filterStatus === "Active") {

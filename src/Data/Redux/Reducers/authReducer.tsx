@@ -5,6 +5,7 @@ import { authApi } from "Data/API/TodolistAPI";
 import { AxiosErrorType, handleServerAppError, handleServerNetworkError } from "Data/error-utils";
 import axios from "axios";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { todolistActions } from "Data/Redux/Reducers/TodolistReducer";
 
 const slice = createSlice({
   name: "auth",
@@ -53,6 +54,7 @@ export const logoutTC = (): AllThunkType => async (dispatch) => {
       if (res.data.resultCode === 0) {
         dispatch(authActions.setIsLoggedIn({ isLoggedIn: false }));
         dispatch(appActions.setNewPreloaderStatus({ status: "succeeded" }));
+        dispatch(todolistActions.clearTodoData());
       } else {
         handleServerAppError(res.data, dispatch);
       }

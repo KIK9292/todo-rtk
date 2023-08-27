@@ -4,7 +4,7 @@ import { AllThunkType } from "../Store";
 import { appActions, RequestStatusType } from "./app-reducer";
 import { handleServerAppError, handleServerNetworkError } from "Data/error-utils";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { getTasksTC } from "Data/Redux/Reducers/TasksReducer";
+import { taskThunks } from "Data/Redux/Reducers/TasksReducer";
 
 const slice = createSlice({
   name: "todolists",
@@ -38,7 +38,7 @@ const slice = createSlice({
       const todolistIndex = state.findIndex((el) => el.id === action.payload.todolistId);
       state[todolistIndex].entityStatus = action.payload.entityStatus;
     },
-    clearTodoData: (state, action: PayloadAction) => {
+    clearTodoData: () => {
       return [];
     },
   },
@@ -58,7 +58,7 @@ export const getTodoTC = (): AllThunkType => {
         return res.data;
       })
       .then((todos) => {
-        todos.forEach((tl) => dispatch(getTasksTC(tl.id)));
+        todos.forEach((tl) => dispatch(taskThunks.getTask({ todolistId: tl.id })));
       })
       .catch((error) => {
         handleServerNetworkError(error, dispatch);

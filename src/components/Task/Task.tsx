@@ -4,11 +4,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import s from "./Task.module.css";
 import Checkbox from "@mui/material/Checkbox";
 import { useAppDispatch } from "Data/Redux/Store";
-import {
-  removeTaskTC,
-  updateStatusTaskTC,
-  updateTitleTaskTC,
-} from "Data/Redux/Reducers/TasksReducer";
+import { taskThunks, updateStatusTaskTC, updateTitleTaskTC } from "Data/Redux/Reducers/TasksReducer";
 import { EditableSpan } from "../EditableSpan/EditableSpan";
 
 type TaskPropsType = {
@@ -22,7 +18,7 @@ export const Task = (props: TaskPropsType) => {
   const { todolistId, taskId, titleTask, checkedStatus } = props;
   const dispatch = useAppDispatch();
   const onClickHandler = () => {
-    dispatch(removeTaskTC(todolistId, taskId));
+    dispatch(taskThunks.removeTask({ todolistID: todolistId, taskID: taskId }));
   };
   const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     let newStatus;
@@ -36,11 +32,7 @@ export const Task = (props: TaskPropsType) => {
 
   return (
     <div className={s.TaskWrapper}>
-      <Checkbox
-        onChange={onChangeHandler}
-        checked={isChecked}
-        className={checkedStatus === 2 ? s.taskCompleted : ""}
-      />
+      <Checkbox onChange={onChangeHandler} checked={isChecked} className={checkedStatus === 2 ? s.taskCompleted : ""} />
       <EditableSpan
         value={titleTask}
         onChange={updateTitleTaskCallback}

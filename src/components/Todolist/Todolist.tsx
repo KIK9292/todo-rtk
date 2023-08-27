@@ -8,13 +8,8 @@ import Button from "@mui/material/Button";
 import s from "./Todolist.module.css";
 import { AddItemForm } from "../AddItemForm/AddIemForm";
 import { useAppDispatch, useAppSelector } from "Data/Redux/Store";
-import { addNewTaskTC, TasksReducerStateType } from "Data/Redux/Reducers/TasksReducer";
-import {
-  FilterValuesType,
-  removeTodolistTC,
-  todolistActions,
-  updateTitleTodoTC,
-} from "Data/Redux/Reducers/TodolistReducer";
+import { TasksReducerStateType, taskThunks } from "Data/Redux/Reducers/TasksReducer";
+import { FilterValuesType, todolistActions, updateTitleTodoTC } from "Data/Redux/Reducers/TodolistReducer";
 import { EditableSpan } from "../EditableSpan/EditableSpan";
 import { RequestStatusType } from "Data/Redux/Reducers/app-reducer";
 import { selectTasks } from "components/Todolist/Todolist.selector";
@@ -31,13 +26,13 @@ export const Todolist = (props: TodolistPropsType) => {
   const dispatch = useAppDispatch();
   const tasks = useAppSelector<TasksReducerStateType>(selectTasks);
   const onClickHandler = () => {
-    dispatch(removeTodolistTC(todolistId));
+    dispatch(todolistActions.removeTodolist({ todolistId: todolistId }));
   };
   const onClickUpdateStatusFilterButton = (newStatus: FilterValuesType) => {
     dispatch(todolistActions.updateStatusFilter({ todolistId: todolistId, filter: newStatus }));
   };
   const addNewTaskCallback = (newTask: string) => {
-    dispatch(addNewTaskTC(todolistId, newTask));
+    dispatch(taskThunks.addNewTask({ todolistID: todolistId, title: newTask }));
   };
   const updateTitleTodoCallback = (newTitleTodo: string) => {
     dispatch(updateTitleTodoTC(todolistId, newTitleTodo));
@@ -50,12 +45,7 @@ export const Todolist = (props: TodolistPropsType) => {
           <h2>
             <EditableSpan value={todolistTitle} onChange={updateTitleTodoCallback} style={""} />
           </h2>
-          <IconButton
-            aria-label="delete"
-            size="large"
-            onClick={onClickHandler}
-            disabled={entityStatus === "loading"}
-          >
+          <IconButton aria-label="delete" size="large" onClick={onClickHandler} disabled={entityStatus === "loading"}>
             <DeleteIcon />
           </IconButton>
         </div>
@@ -63,16 +53,10 @@ export const Todolist = (props: TodolistPropsType) => {
         <Tasks todolistId={todolistId} filterStatus={filterStatus} />
         {tasks[todolistId].length !== 0 && (
           <ButtonGroup variant="contained" aria-label="outlined primary button group">
-            <Button
-              onClick={() => onClickUpdateStatusFilterButton("All")}
-              disabled={filterStatus === "All"}
-            >
+            <Button onClick={() => onClickUpdateStatusFilterButton("All")} disabled={filterStatus === "All"}>
               All
             </Button>
-            <Button
-              onClick={() => onClickUpdateStatusFilterButton("Active")}
-              disabled={filterStatus === "Active"}
-            >
+            <Button onClick={() => onClickUpdateStatusFilterButton("Active")} disabled={filterStatus === "Active"}>
               Active
             </Button>
             <Button

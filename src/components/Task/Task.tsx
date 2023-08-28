@@ -4,12 +4,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import s from "./Task.module.css";
 import Checkbox from "@mui/material/Checkbox";
 import { useAppDispatch } from "Data/Redux/Store";
-import {
-  taskThunks,
-  updateStatusTaskTC,
-  updateTitleTaskTC,
-} from "Data/Redux/Reducers/TasksReducer";
+import { taskThunks } from "Data/Redux/Reducers/TasksReducer";
 import { EditableSpan } from "../EditableSpan/EditableSpan";
+import { TaskStatuses } from "Data/API/APITypes";
 
 type TaskPropsType = {
   todolistId: string;
@@ -26,13 +23,23 @@ export const Task = (props: TaskPropsType) => {
   };
   const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     let newStatus;
-    e.currentTarget.checked ? (newStatus = 2) : (newStatus = 0);
+    e.currentTarget.checked ? (newStatus = TaskStatuses.Completed) : (newStatus = TaskStatuses.New);
     dispatch(
-      taskThunks.updateStatusTask({ todolistId: todolistId, taskId: taskId, newStatus: newStatus }),
+      taskThunks.updateTask({
+        todolistId: todolistId,
+        taskId: taskId,
+        domainModel: { status: newStatus },
+      }),
     );
   };
   const updateTitleTaskCallback = (newTitle: string) => {
-    dispatch(updateTitleTaskTC(todolistId, taskId, newTitle));
+    dispatch(
+      taskThunks.updateTask({
+        todolistId: todolistId,
+        taskId: taskId,
+        domainModel: { title: newTitle },
+      }),
+    );
   };
   const isChecked = checkedStatus === 2;
 

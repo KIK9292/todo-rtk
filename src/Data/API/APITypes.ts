@@ -78,3 +78,17 @@ export type UpdateStatusTaskArgType = {
   taskId: string;
   newStatus: TaskStatuses;
 };
+export type UpdateTaskArgType = {
+  todolistId: string;
+  taskId: string;
+  domainModel: DomainModelType;
+};
+export type DomainModelType = {
+  title?: string;
+  description?: null | string;
+  completed?: boolean;
+  status?: TaskStatuses;
+  priority?: TaskPriorities;
+  startDate?: null | string;
+  deadline?: null | string;
+};

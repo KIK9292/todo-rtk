@@ -73,3 +73,8 @@ export type UpdateTitleTaskArgType = {
   todolistID: string;
   title: string;
 };
+export type UpdateStatusTaskArgType = {
+  todolistId: string;
+  taskId: string;
+  newStatus: TaskStatuses;
+};

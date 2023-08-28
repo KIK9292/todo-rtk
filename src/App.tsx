@@ -12,7 +12,7 @@ import { RequestStatusType } from "Data/Redux/Reducers/app-reducer";
 import { ErrorSnackbar } from "components/ErrorSnackbar/ErrorSnackbar";
 import { Navigate, NavLink, Route, Routes } from "react-router-dom";
 import { Login } from "components/Login/Login";
-import { logoutTC, statusLoginTC } from "Data/Redux/Reducers/authReducer";
+import { authThunk } from "Data/Redux/Reducers/authReducer";
 import { MyAppTodolist } from "components/MyAppTodolist/myAppTodolist";
 import CircularProgress from "@mui/material/CircularProgress";
 import { selectIsInitialized, selectIsLoggedIn, selectStatus } from "app.selectors";
@@ -23,11 +23,11 @@ function App() {
   const isLoggedIn = useAppSelector<boolean>(selectIsLoggedIn);
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(statusLoginTC());
+    dispatch(authThunk.statusLogin());
   }, [isLoggedIn]);
 
   const onLogoutHandler = () => {
-    dispatch(logoutTC());
+    dispatch(authThunk.logout());
   };
 
   if (!isInitialized) {

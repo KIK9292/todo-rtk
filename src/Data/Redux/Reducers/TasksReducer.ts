@@ -6,6 +6,7 @@ import {
   TaskStatuses,
   TasksType,
   UpdateStatusTaskArgType,
+  UpdateTaskArgType,
   UpdateTitleTaskArgType,
 } from "Data/API/APITypes";
 import { AllThunkType, RootReducerType } from "../Store";
@@ -18,26 +19,16 @@ import { createAppAsyncThunk } from "Data/createAppAsyncThunk";
 const slice = createSlice({
   name: "tasks",
   initialState: {} as TasksReducerStateType,
-  reducers: {
-    // updateTask: (state, action: PayloadAction<{ task: TasksType }>) => {
-    //   const taskIndex = state[action.payload.task.todoListId].findIndex(
-    //     (el) => el.id === action.payload.task.id,
-    //   );
-    //   state[action.payload.task.todoListId][taskIndex] = {
-    //     ...state[action.payload.task.todoListId][taskIndex],
-    //     ...action.payload.task,
-    //   };
-    // },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(taskThunks.updateStatusTask.fulfilled, (state, action) => {
-        const taskIndex = state[action.payload.task.todoListId].findIndex(
-          (el) => el.id === action.payload.task.id,
+      .addCase(taskThunks.updateTask.fulfilled, (state, action) => {
+        const taskIndex = state[action.payload.todolistId].findIndex(
+          (el) => el.id === action.payload.taskId,
         );
-        state[action.payload.task.todoListId][taskIndex] = {
-          ...state[action.payload.task.todoListId][taskIndex],
-          ...action.payload,
+        state[action.payload.todolistId][taskIndex] = {
+          ...state[action.payload.todolistId][taskIndex],
+          ...action.payload.domainModel,
         };
       })
       .addCase(taskThunks.addNewTask.fulfilled, (state, action) => {
@@ -127,12 +118,12 @@ const addNewTask = createAppAsyncThunk<{ task: TasksType }, UpdateTitleTaskArgTy
     }
   },
 );
-const updateStatusTask = createAppAsyncThunk<{ task: TasksType }, UpdateStatusTaskArgType>(
-  "tasks/updateStatusTask",
+//
+const updateTask = createAppAsyncThunk<UpdateTaskArgType, UpdateTaskArgType>(
+  "tasks/updateTask",
   async (arg, thunkAPI) => {
     const { dispatch, rejectWithValue, getState } = thunkAPI;
     dispatch(appActions.setNewPreloaderStatus({ status: "loading" }));
-
     try {
       let task = getState().Tasks[arg.todolistId].find((f) => f.id === arg.taskId);
       if (!task) {
@@ -143,15 +134,16 @@ const updateStatusTask = createAppAsyncThunk<{ task: TasksType }, UpdateStatusTa
         title: task.title,
         description: task.description,
         completed: !task.completed,
-        status: arg.newStatus,
+        status: task.status,
         priority: task.priority,
         startDate: task.startDate,
         deadline: task.deadline,
+        ...arg.domainModel,
       };
       const res = await todolistAPI.putTask(arg.todolistId, arg.taskId, model);
       if (res.data.resultCode === 0) {
         dispatch(appActions.setNewPreloaderStatus({ status: "succeeded" }));
-        return { task: res.data.data.item };
+        return arg;
       } else {
         handleServerAppError(res.data, dispatch);
         return rejectWithValue(null);
@@ -162,48 +154,11 @@ const updateStatusTask = createAppAsyncThunk<{ task: TasksType }, UpdateStatusTa
     }
   },
 );
-// const updateStatusTask=
 
-const updateTitleTask = createAppAsyncThunk;
-export const updateTitleTaskTC = (
-  todolistId: string,
-  taskId: string,
-  newTitle: string,
-): AllThunkType => {
-  return (dispatch, getState: () => RootReducerType) => {
-    dispatch(appActions.setNewPreloaderStatus({ status: "loading" }));
-    let task = getState().Tasks[todolistId].find((f) => f.id === taskId);
-    if (task) {
-      const model: TasksPutRequestModelType = {
-        title: newTitle,
-        description: task.description,
-        completed: !task.completed,
-        status: task.status,
-        priority: task.priority,
-        startDate: task.startDate,
-        deadline: task.deadline,
-      };
-      todolistAPI
-        .putTask(todolistId, taskId, model)
-        // .then(res=>console.log(res.data.item))
-        .then((res) => {
-          if (res.data.resultCode === 0) {
-            dispatch(tasksActions.updateTask({ task: res.data.data.item }));
-            dispatch(appActions.setNewPreloaderStatus({ status: "succeeded" }));
-          } else {
-            handleServerAppError(res.data, dispatch);
-          }
-        })
-        .catch((error) => {
-          handleServerNetworkError(error, dispatch);
-        });
-    }
-  };
-};
 export type TasksReducerStateType = {
   [key: string]: TasksType[];
 };
 
 export const tasksReducer = slice.reducer;
 export const tasksActions = slice.actions;
-export const taskThunks = { getTask, removeTask, addNewTask, updateStatusTask };
+export const taskThunks = { getTask, removeTask, addNewTask, updateTask };

@@ -5,6 +5,7 @@ import { handleServerAppError } from "Data/error-utils";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { todolistActions } from "Data/Redux/Reducers/TodolistReducer";
 import { createAppAsyncThunk } from "Data/createAppAsyncThunk";
+import { ResultCode } from "Data/API/APITypes";
 
 const slice = createSlice({
   name: "auth",
@@ -62,7 +63,7 @@ const logout = createAppAsyncThunk<{ isLoggedIn: boolean }, void>(
     dispatch(appActions.setNewPreloaderStatus({ status: "loading" }));
     try {
       const res = await authApi.logout();
-      if (res.data.resultCode === 0) {
+      if (res.data.resultCode === ResultCode.success) {
         dispatch(appActions.setNewPreloaderStatus({ status: "succeeded" }));
         dispatch(todolistActions.clearTodoData());
         return { isLoggedIn: false };
@@ -84,7 +85,7 @@ const statusLogin = createAppAsyncThunk<{ isLoggedIn: boolean }, void>(
     try {
       const res = await authApi.me();
 
-      if (res.data.resultCode === 0) {
+      if (res.data.resultCode === ResultCode.success) {
         dispatch(appActions.setNewPreloaderStatus({ status: "succeeded" }));
         return { isLoggedIn: true };
       } else {

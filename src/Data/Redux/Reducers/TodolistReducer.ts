@@ -1,10 +1,8 @@
-import { TodoItemResponceType } from "Data/API/APITypes";
+import { ResultCode, TodoItemResponceType } from "Data/API/APITypes";
 import { todolistAPI } from "Data/API/TodolistAPI";
-import { AllThunkType } from "../Store";
 import { appActions, RequestStatusType } from "./app-reducer";
-import { handleServerAppError, handleServerNetworkError } from "Data/error-utils";
+import { handleServerAppError } from "Data/error-utils";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { taskThunks } from "Data/Redux/Reducers/TasksReducer";
 import { createAppAsyncThunk } from "Data/createAppAsyncThunk";
 
 const slice = createSlice({
@@ -96,7 +94,7 @@ const removeTodolist = createAppAsyncThunk<{ todolistId: string }, string>(
     dispatch(appActions.setNewPreloaderStatus({ status: "loading" }));
     try {
       const res = await todolistAPI.deleteTodolists(todolistId);
-      if (res.data.resultCode === 0) {
+      if (res.data.resultCode === ResultCode.success) {
         dispatch(appActions.setNewPreloaderStatus({ status: "succeeded" }));
         dispatch(
           todolistActions.setNewEntityStatus({ todolistId: todolistId, entityStatus: "succeeded" }),
@@ -156,7 +154,7 @@ const addNewTodolist = createAppAsyncThunk<{ todo: TodoItemResponceType }, strin
     try {
       const res = await todolistAPI.postTodolists(newTodo);
 
-      if (res.data.resultCode === 0) {
+      if (res.data.resultCode === ResultCode.success) {
         dispatch(appActions.setNewPreloaderStatus({ status: "succeeded" }));
         return { todo: res.data.data.item };
       } else {
@@ -199,7 +197,7 @@ const updateTitleTodo = createAppAsyncThunk<
   dispatch(appActions.setNewPreloaderStatus({ status: "loading" }));
   try {
     const res = await todolistAPI.putTodolists(todolistId, newTitleTodo);
-    if (res.data.resultCode === 0) {
+    if (res.data.resultCode === ResultCode.success) {
       dispatch(appActions.setNewPreloaderStatus({ status: "succeeded" }));
 
       return { todolistId: todolistId, title: newTitleTodo };

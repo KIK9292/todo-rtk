@@ -1,19 +1,16 @@
 import { todolistActions, todolistThunk } from "./TodolistReducer";
 import {
   RemoveTaskArgType,
-  ResponceType,
+  ResultCode,
   TasksPutRequestModelType,
-  TaskStatuses,
   TasksType,
-  UpdateStatusTaskArgType,
   UpdateTaskArgType,
   UpdateTitleTaskArgType,
 } from "Data/API/APITypes";
-import { AllThunkType, RootReducerType } from "../Store";
 import { todolistAPI } from "Data/API/TodolistAPI";
 import { appActions } from "./app-reducer";
-import { handleServerAppError, handleServerNetworkError } from "Data/error-utils";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { handleServerAppError } from "Data/error-utils";
+import { createSlice } from "@reduxjs/toolkit";
 import { createAppAsyncThunk } from "Data/createAppAsyncThunk";
 
 const slice = createSlice({
@@ -85,7 +82,7 @@ const removeTask = createAppAsyncThunk<{ todolistID: string; taskID: string }, R
     dispatch(appActions.setNewPreloaderStatus({ status: "loading" }));
     try {
       const res = await todolistAPI.deleteTask(arg);
-      if (res.data.resultCode === 0) {
+      if (res.data.resultCode === ResultCode.success) {
         dispatch(appActions.setNewPreloaderStatus({ status: "succeeded" }));
         return { todolistID, taskID };
       } else {
@@ -105,7 +102,7 @@ const addNewTask = createAppAsyncThunk<{ task: TasksType }, UpdateTitleTaskArgTy
     dispatch(appActions.setNewPreloaderStatus({ status: "loading" }));
     try {
       const res = await todolistAPI.postTasks(arg);
-      if (res.data.resultCode === 0) {
+      if (res.data.resultCode === ResultCode.success) {
         dispatch(appActions.setNewPreloaderStatus({ status: "succeeded" }));
         return { task: res.data.data.item };
       } else {
@@ -141,7 +138,7 @@ const updateTask = createAppAsyncThunk<UpdateTaskArgType, UpdateTaskArgType>(
         ...arg.domainModel,
       };
       const res = await todolistAPI.putTask(arg.todolistId, arg.taskId, model);
-      if (res.data.resultCode === 0) {
+      if (res.data.resultCode === ResultCode.success) {
         dispatch(appActions.setNewPreloaderStatus({ status: "succeeded" }));
         return arg;
       } else {

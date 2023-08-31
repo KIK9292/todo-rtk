@@ -1,4 +1,4 @@
-import { todolistActions } from "./TodolistReducer";
+import { todolistActions, todolistThunk } from "./TodolistReducer";
 import {
   RemoveTaskArgType,
   ResponceType,
@@ -46,13 +46,13 @@ const slice = createSlice({
       .addCase(taskThunks.getTask.fulfilled, (state, action) => {
         state[action.payload.todolistId] = action.payload.tasks;
       })
-      .addCase(todolistActions.addNewTodolist, (state, action) => {
+      .addCase(todolistThunk.addNewTodolist.fulfilled, (state, action) => {
         state[action.payload.todo.id] = [];
       })
-      .addCase(todolistActions.removeTodolist, (state, action) => {
+      .addCase(todolistThunk.removeTodolist.fulfilled, (state, action) => {
         delete state[action.payload.todolistId];
       })
-      .addCase(todolistActions.getTodo, (state, action) => {
+      .addCase(todolistThunk.getTodo.fulfilled, (state, action) => {
         action.payload.todos.forEach((el) => (state[el.id] = []));
       })
       .addCase(todolistActions.clearTodoData, () => {

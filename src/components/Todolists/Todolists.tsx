@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "Data/Redux/Store";
-import { DomainType, getTodoTC } from "Data/Redux/Reducers/TodolistReducer";
+import { DomainType, todolistThunk } from "Data/Redux/Reducers/TodolistReducer";
 import { Todolist } from "../Todolist/Todolist";
 import s from "./Todolists.module.css";
 import { selectTasks } from "components/Todolists/TTodolists.selectors";
@@ -9,7 +9,7 @@ export const Todolists = () => {
   const dispatch = useAppDispatch();
   const todo = useAppSelector<DomainType[]>(selectTasks);
   useEffect(() => {
-    dispatch(getTodoTC());
+    dispatch(todolistThunk.getTodo());
   }, []);
 
   return (

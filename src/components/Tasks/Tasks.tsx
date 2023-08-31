@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "Data/Redux/Store";
 import { Task } from "../Task/Task";
 import { FilterValuesType } from "Data/Redux/Reducers/TodolistReducer";
 import { selectTasks } from "components/Tasks/Tasks.select";
-import { TasksReducerStateType } from "Data/Redux/Reducers/TasksReducer";
+import { TasksReducerStateType, taskThunks } from "Data/Redux/Reducers/TasksReducer";
 
 type TasksPropsType = {
   todolistId: string;
@@ -13,9 +13,9 @@ type TasksPropsType = {
 export const Tasks = (props: TasksPropsType) => {
   const { todolistId, filterStatus } = props;
   const dispatch = useAppDispatch();
-  // useEffect(() => {
-  //   dispatch(getTasksTC(todolistId));
-  // }, []);
+  useEffect(() => {
+    dispatch(taskThunks.getTask({ todolistId: todolistId }));
+  }, []);
   const allTasks = useAppSelector<TasksReducerStateType>(selectTasks);
   let filteredTask = allTasks[todolistId];
   if (filterStatus === "Active") {
